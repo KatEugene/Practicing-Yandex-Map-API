@@ -5,7 +5,7 @@ from PIL import Image
 from scale import scope
 from dist import distance
 
-address = " ".join(list(map(str.strip, sys.stdin)))
+address = input()
 
 # Получаем координаты заданного объекта
 
