@@ -1,6 +1,3 @@
-# Key for geocoder API: 40d1649f-0493-4b70-98ba-98533de7710b
-# Key for search API: dda3ddba-c9ea-4ead-9010-f43fbc15c6e3
-
 import sys
 import requests
 from io import BytesIO
@@ -38,5 +35,4 @@ map_params = {
 map_api_server = "http://static-maps.yandex.ru/1.x/"
 response = requests.get(map_api_server, params=map_params)
 
-Image.open(BytesIO(
-    response.content)).show()
+Image.open(BytesIO(response.content)).show()
