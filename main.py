@@ -43,10 +43,13 @@ search_params = {
 response = requests.get(search_api_server, params=search_params)
 json_response = response.json()
 
-pharmacy_longitude = json_response["features"][0]["geometry"]["coordinates"][0]
-pharmacy_latitude = json_response["features"][0]["geometry"]["coordinates"][1]
+objects2 = []
 
-objects2 = [pharmacy_longitude, pharmacy_latitude, "pm2rdm1"]
+for i in range(10):
+    pharmacy_longitude = json_response["features"][i]["geometry"]["coordinates"][0]
+    pharmacy_latitude = json_response["features"][i]["geometry"]["coordinates"][1]
+
+    objects2 += [pharmacy_longitude, pharmacy_latitude, f"pm2rdm{i}"]
 
 # Формируем итоговый запрос
 
@@ -63,10 +66,13 @@ map_api_server = "http://static-maps.yandex.ru/1.x/"
 response = requests.get(map_api_server, params=map_params)
 
 object_coordinates = (float(geo_obj_longitude), float(geo_obj_latitude))
-pharmacy_coordinates = (pharmacy_longitude, pharmacy_latitude)
 
-_distance = round(distance(object_coordinates, pharmacy_coordinates) / 1000, 2)
+for i in range(10):
+    pharmacy_coordinates = (objects2[i * 3], float(objects[i * 3 + 1]))
+    print(pharmacy_coordinates)
 
-print(f"Расстояние между вашим расположением и ближайшей аптекой составляет {_distance} километров")
+    _distance = round(distance(object_coordinates, pharmacy_coordinates) / 1000, 2)
+
+    print(f"Расстояние между вашим расположением и аптекой номер {i + 1} составляет {_distance} километров")
 
 Image.open(BytesIO(response.content)).show()
