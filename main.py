@@ -5,6 +5,7 @@ import sys
 import requests
 from io import BytesIO
 from PIL import Image
+from scale import scope
 
 address = " ".join(list(map(str.strip, sys.stdin)))
 
@@ -25,16 +26,12 @@ geo_obj = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["
 geo_obj_coordinates = geo_obj["Point"]["pos"]
 geo_obj_longitude, geo_obj_latitude = geo_obj_coordinates.split(" ")
 
-envelope = geo_obj["boundedBy"]["Envelope"]
-lower_corner = list(map(float, envelope["lowerCorner"].split()))
-upper_corner = list(map(float, envelope["upperCorner"].split()))
-
-delta_x = (upper_corner[0] - lower_corner[0]) / 2
-delta_y = (upper_corner[1] - lower_corner[1]) / 2
+delta_x, delta_y = scope(geo_obj)
 
 map_params = {
     "ll": ",".join([geo_obj_longitude, geo_obj_latitude]),
     "spn": ",".join([str(delta_x), str(delta_y)]),
+    "pt": ",".join([geo_obj_longitude, geo_obj_latitude, "pm2rdm1"]),
     "l": "map"
 }
 
