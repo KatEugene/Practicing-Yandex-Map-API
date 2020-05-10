@@ -1,78 +1,57 @@
+# pyuic5 map_design.ui -o map_design.py
+
 import sys
-import requests
-from io import BytesIO
-from PIL import Image
-from scale import scope
-from dist import distance
+from geo_functions import *
+from map_real_design import Ui_MainWindow
 
-address = input()
+from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QApplication, QLabel
+from PyQt5.QtWidgets import QPushButton
+from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtGui import QPixmap
 
-# Получаем координаты заданного объекта
 
-geo_api_server = "http://geocode-maps.yandex.ru/1.x/"
+def create_picture(image):
+    new_file = "map.png"
 
-geo_params = {
-    "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
-    "geocode": address,
-    "format": "json"
-}
+    with open(new_file, "wb") as file:
+        file.write(image)
 
-response = requests.get(geo_api_server, params=geo_params)
-json_response = response.json()
 
-geo_obj = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+class MapInterface(QMainWindow, Ui_MainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.initUI()
 
-geo_obj_coordinates = geo_obj["Point"]["pos"]
-geo_obj_longitude, geo_obj_latitude = geo_obj_coordinates.split(" ")
+    def initUI(self):
+        self.setWindowTitle('Map')
+        self.center_the_window()
 
-delta_x, delta_y = scope(geo_obj)
+        self.current = "map.png"
+        self.set_default()
+        self.set_map()
 
-objects1 = [geo_obj_longitude, geo_obj_latitude, "pm2rdm1"]
+    def center_the_window(self):
+        screen = QDesktopWidget().screenGeometry()
+        size = self.geometry()
+        self.move((screen.width() - size.width()) // 2,
+                  (screen.height() - size.height()) // 2)
 
-# Получаем координаты ближайшей аптеки
+    @staticmethod
+    def set_default():
+        coordinates = get_object_coordinates("Москва")
+        scope = get_object_scope("Москва")
+        create_picture(get_object_on_map(coordinates, *scope, "map"))
 
-search_api_server = "http://search-maps.yandex.ru/v1/"
+    def set_map(self):
+        self.pix_map = QPixmap(self.current).scaled(900, 675)
+        self.image = QLabel(self)
+        self.image.resize(900, 675)
+        self.image.setPixmap(self.pix_map)
 
-search_params = {
-    "apikey": "dda3ddba-c9ea-4ead-9010-f43fbc15c6e3",
-    "text": "Аптеки",
-    "ll": f"{geo_obj_longitude},{geo_obj_latitude}",
-    "lang": "ru_RU"
-}
 
-response = requests.get(search_api_server, params=search_params)
-json_response = response.json()
-
-objects2 = []
-
-for i in range(10):
-    pharmacy_longitude = json_response["features"][i]["geometry"]["coordinates"][0]
-    pharmacy_latitude = json_response["features"][i]["geometry"]["coordinates"][1]
-
-    objects2 += [pharmacy_longitude, pharmacy_latitude, f"pm2rdm{i}"]
-
-# Формируем итоговый запрос
-
-objects = list(map(str, objects1 + objects2))
-
-map_params = {
-    "ll": ",".join([geo_obj_longitude, geo_obj_latitude]),
-    "spn": ",".join([str(delta_x), str(delta_y)]),
-    "pt": ",".join(objects),
-    "l": "map"
-}
-
-map_api_server = "http://static-maps.yandex.ru/1.x/"
-response = requests.get(map_api_server, params=map_params)
-
-object_coordinates = (float(geo_obj_longitude), float(geo_obj_latitude))
-
-for i in range(10):
-    pharmacy_coordinates = (objects2[i * 3], float(objects[i * 3 + 1]))
-    print(pharmacy_coordinates)
-
-    _distance = round(distance(object_coordinates, pharmacy_coordinates) / 1000, 2)
-
-    print(f"Расстояние между вашим расположением и аптекой номер {i + 1} составляет {_distance} километров")
-
-Image.open(BytesIO(response.content)).show()
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    _map = MapInterface()
+    _map.show()
+    sys.exit(app.exec_())
