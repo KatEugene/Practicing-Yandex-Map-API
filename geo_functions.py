@@ -49,7 +49,7 @@ def get_object_coordinates(address):
 
     geo_obj_coordinates = geo_obj["Point"]["pos"]
 
-    return geo_obj_coordinates.replace(" ", ",")
+    return list(map(float, geo_obj_coordinates.split()))
 
 
 def get_object_scope(address):
@@ -68,13 +68,34 @@ def get_object_scope(address):
     return scale(envelope)
 
 
-def get_object_on_map(object_coordinates, delta_x, delta_y, kind):
-    static_map_params = {
-        "ll": object_coordinates,
-        "spn": f"{delta_x},{delta_y}",
-        "l": kind
+def get_object_on_map(object_coordinates, kind, delta_x=0, delta_y=0, z=-1):
+    if z == -1:
+        static_map_params = {
+            "ll": object_coordinates,
+            "spn": f"{delta_x},{delta_y}",
+            "l": kind
+        }
+    else:
+        static_map_params = {
+            "ll": object_coordinates,
+            "z": z,
+            "l": kind
+        }
+    print(static_map_params)
+    static_map_response = requests.get(static_map_server, params=static_map_params)
+    return static_map_response.content
+
+
+def kind_of_object(address):
+    geo_code_params = {
+        "apikey": geo_api_key,
+        "geocode": address,
+        "format": "json"
     }
 
-    static_map_response = requests.get(static_map_server, params=static_map_params)
+    geo_code_response = requests.get(geo_code_server, params=geo_code_params)
+    geo_code_json_response = geo_code_response.json()
 
-    return static_map_response.content
+    geo_obj = geo_code_json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+
+    return geo_obj["metaDataProperty"]["GeocoderMetaData"]["kind"]
