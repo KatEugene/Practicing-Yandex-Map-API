@@ -41,6 +41,7 @@ class MapInterface(QMainWindow, Ui_MainWindow):
         self.btn_hybrid.clicked.connect(self.hybrid)
 
         self.btn_search.clicked.connect(self.search)
+        self.btn_clear.clicked.connect(self.clear)
 
     def set_map(self):
         self.pix_map = QPixmap(self.current_map)
@@ -137,6 +138,10 @@ class MapInterface(QMainWindow, Ui_MainWindow):
         new_address = self.address.text()
         self.list_of_coordinates.append(get_object_coordinates(new_address))
         self.set_object(new_address)
+
+    def clear(self):
+        self.list_of_coordinates.clear()
+        self.change_picture()
 
     def center_the_window(self):
         screen = QDesktopWidget().screenGeometry()
