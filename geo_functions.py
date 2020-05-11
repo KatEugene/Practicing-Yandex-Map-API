@@ -43,6 +43,7 @@ def get_object_coordinates(address):
     }
 
     geo_code_response = requests.get(geo_code_server, params=geo_code_params)
+    print(geo_code_response.url)
     geo_code_json_response = geo_code_response.json()
 
     geo_obj = geo_code_json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
@@ -97,3 +98,18 @@ def kind_of_object(address):
     geo_obj = geo_code_json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
 
     return geo_obj["metaDataProperty"]["GeocoderMetaData"]["kind"]
+
+
+def get_object_address(_object):
+    geo_code_params = {
+        "apikey": geo_api_key,
+        "geocode": _object,
+        "format": "json"
+    }
+
+    geo_code_response = requests.get(geo_code_server, params=geo_code_params)
+    geo_code_json_response = geo_code_response.json()
+
+    geo_obj = geo_code_json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+
+    return geo_obj["metaDataProperty"]["GeocoderMetaData"]["text"]

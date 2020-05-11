@@ -43,6 +43,8 @@ class MapInterface(QMainWindow, Ui_MainWindow):
         self.btn_search.clicked.connect(self.search)
         self.btn_clear.clicked.connect(self.clear)
 
+        self.btn_find_address.clicked.connect(self.find_address)
+
     def set_map(self):
         self.pix_map = QPixmap(self.current_map)
         self.image = QLabel(self)
@@ -148,6 +150,10 @@ class MapInterface(QMainWindow, Ui_MainWindow):
         size = self.geometry()
         self.move((screen.width() - size.width()) // 2,
                   (screen.height() - size.height()) // 2)
+
+    def find_address(self):
+        address = get_object_address(self.current_object)
+        self.address_of_object.setText(address)
 
 
 if __name__ == "__main__":

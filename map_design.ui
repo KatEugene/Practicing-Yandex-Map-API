@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>700</x>
-      <y>280</y>
+      <y>310</y>
       <width>41</width>
       <height>41</height>
      </rect>
@@ -31,7 +31,7 @@
     <property name="geometry">
      <rect>
       <x>700</x>
-      <y>350</y>
+      <y>380</y>
       <width>41</width>
       <height>41</height>
      </rect>
@@ -44,7 +44,7 @@
     <property name="geometry">
      <rect>
       <x>870</x>
-      <y>260</y>
+      <y>280</y>
       <width>41</width>
       <height>41</height>
      </rect>
@@ -57,7 +57,7 @@
     <property name="geometry">
      <rect>
       <x>820</x>
-      <y>310</y>
+      <y>330</y>
       <width>41</width>
       <height>41</height>
      </rect>
@@ -70,7 +70,7 @@
     <property name="geometry">
      <rect>
       <x>920</x>
-      <y>310</y>
+      <y>330</y>
       <width>41</width>
       <height>41</height>
      </rect>
@@ -83,7 +83,7 @@
     <property name="geometry">
      <rect>
       <x>870</x>
-      <y>360</y>
+      <y>380</y>
       <width>41</width>
       <height>41</height>
      </rect>
@@ -95,8 +95,8 @@
    <widget class="QPushButton" name="btn_scheme">
     <property name="geometry">
      <rect>
-      <x>680</x>
-      <y>200</y>
+      <x>690</x>
+      <y>220</y>
       <width>81</width>
       <height>41</height>
      </rect>
@@ -108,8 +108,8 @@
    <widget class="QPushButton" name="btn_satellite">
     <property name="geometry">
      <rect>
-      <x>780</x>
-      <y>200</y>
+      <x>800</x>
+      <y>220</y>
       <width>81</width>
       <height>41</height>
      </rect>
@@ -121,8 +121,8 @@
    <widget class="QPushButton" name="btn_hybrid">
     <property name="geometry">
      <rect>
-      <x>890</x>
-      <y>200</y>
+      <x>910</x>
+      <y>220</y>
       <width>81</width>
       <height>41</height>
      </rect>
@@ -178,6 +178,32 @@
     </property>
     <property name="text">
      <string>Очистить</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="btn_find_address">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>130</y>
+      <width>171</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Определить адрес объекта:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="address_of_object">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>180</y>
+      <width>341</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>
