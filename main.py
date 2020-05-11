@@ -21,6 +21,7 @@ class MapInterface(QMainWindow, Ui_MainWindow):
         self.setWindowTitle('Map')
         self.center_the_window()
 
+        self.list_of_coordinates = []
         self.current_map = "map.png"
         self.current_kind = "map"
         self.current_z = 9
@@ -39,6 +40,8 @@ class MapInterface(QMainWindow, Ui_MainWindow):
         self.btn_satellite.clicked.connect(self.satellite)
         self.btn_hybrid.clicked.connect(self.hybrid)
 
+        self.btn_search.clicked.connect(self.search)
+
     def set_map(self):
         self.pix_map = QPixmap(self.current_map)
         self.image = QLabel(self)
@@ -49,8 +52,22 @@ class MapInterface(QMainWindow, Ui_MainWindow):
         self.current_object = address
         self.current_coordinates = get_object_coordinates(self.current_object)
         scope = get_object_scope(self.current_object)
-        create_picture(get_object_on_map(",".join(list(map(str, self.current_coordinates))), self.current_kind, *scope),
-                       self.current_map)
+        if len(self.list_of_coordinates) > 0:
+            _pt = []
+            for i in range(len(self.list_of_coordinates)):
+                _pt.append(','.join(list(map(str, self.list_of_coordinates[i])) + [f"pm2rdm{i+1}"]))
+            _pt = "~".join(_pt)
+
+            create_picture(
+                get_object_on_map(",".join(list(map(str, self.current_coordinates))),
+                                  self.current_kind, *scope, pt=_pt),
+                self.current_map
+            )
+        else:
+            create_picture(
+                get_object_on_map(",".join(list(map(str, self.current_coordinates))), self.current_kind, *scope),
+                self.current_map
+            )
         try:
             self.image.deleteLater()
         except AttributeError:
@@ -59,9 +76,23 @@ class MapInterface(QMainWindow, Ui_MainWindow):
         self.image.show()
 
     def change_picture(self):
-        create_picture(get_object_on_map(",".join(list(map(str, self.current_coordinates))), self.current_kind, 0, 0,
-                                         self.current_z),
-                       self.current_map)
+        if len(self.list_of_coordinates) > 0:
+            _pt = []
+            for i in range(len(self.list_of_coordinates)):
+                _pt.append(','.join(list(map(str, self.list_of_coordinates[i])) + [f"pm2rdm{i+1}"]))
+            _pt = "~".join(_pt)
+
+            create_picture(
+                get_object_on_map(",".join(list(map(str, self.current_coordinates))), self.current_kind,
+                                  z=self.current_z, pt=_pt),
+                self.current_map
+            )
+        else:
+            create_picture(
+                get_object_on_map(",".join(list(map(str, self.current_coordinates))), self.current_kind,
+                                  z=self.current_z),
+                self.current_map
+            )
         self.image.deleteLater()
         self.set_map()
         self.image.show()
@@ -101,6 +132,11 @@ class MapInterface(QMainWindow, Ui_MainWindow):
     def hybrid(self):
         self.current_kind = "sat,skl"
         self.change_picture()
+
+    def search(self):
+        new_address = self.address.text()
+        self.list_of_coordinates.append(get_object_coordinates(new_address))
+        self.set_object(new_address)
 
     def center_the_window(self):
         screen = QDesktopWidget().screenGeometry()

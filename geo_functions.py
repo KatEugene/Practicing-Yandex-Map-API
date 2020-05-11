@@ -68,19 +68,17 @@ def get_object_scope(address):
     return scale(envelope)
 
 
-def get_object_on_map(object_coordinates, kind, delta_x=0, delta_y=0, z=-1):
-    if z == -1:
-        static_map_params = {
-            "ll": object_coordinates,
-            "spn": f"{delta_x},{delta_y}",
-            "l": kind
-        }
+def get_object_on_map(object_coordinates, kind, delta_x=None, delta_y=None, z=None, pt=None):
+    static_map_params = {
+        "ll": object_coordinates,
+        "l": kind
+    }
+    if delta_x and delta_y:
+        static_map_params["spn"] = f"{delta_x},{delta_y}"
     else:
-        static_map_params = {
-            "ll": object_coordinates,
-            "z": z,
-            "l": kind
-        }
+        static_map_params["z"] = z
+    if pt:
+        static_map_params["pt"] = pt
     print(static_map_params)
     static_map_response = requests.get(static_map_server, params=static_map_params)
     return static_map_response.content

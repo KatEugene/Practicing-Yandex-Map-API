@@ -131,7 +131,7 @@
      <string>Гибрид</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit">
+   <widget class="QLineEdit" name="address">
     <property name="geometry">
      <rect>
       <x>820</x>
@@ -141,7 +141,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="btn_search">
     <property name="geometry">
      <rect>
       <x>860</x>
